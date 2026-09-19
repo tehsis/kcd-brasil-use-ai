@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: myapp
+  name: myapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - image: busybox
+        command:
+          - sh
+          - -c
+          - |
+            echo "STATIC: $STATIC_SECRET"
+            echo "ROTATED: $ROTATED_SECRET"
+            sleep 3600
+        name: busybox
+        resources: {}
+        env:
+          - name: STATIC_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: secrets-demo
+                key: static-secret
+          - name: ROTATED_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: secrets-demo
+                key: rotated-secret
+
+status: {}
