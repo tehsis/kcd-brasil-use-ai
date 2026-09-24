@@ -16,26 +16,30 @@ spec:
         app: myapp
     spec:
       containers:
-      - image: busybox
+      - image: amazon/aws-cli
         command:
           - sh
           - -c
           - |
-            echo "STATIC: $STATIC_SECRET"
-            echo "ROTATED: $ROTATED_SECRET"
+            echo "Listing buckets..."
+            aws s3 ls
             sleep 3600
-        name: busybox
+        name: aws-list-buckets
         resources: {}
         env:
-          - name: STATIC_SECRET
+          - name: AWS_ACCESS_KEY_ID
             valueFrom:
               secretKeyRef:
                 name: secrets-demo
-                key: static-secret
-          - name: ROTATED_SECRET
+                key: aws-access-key-id
+          - name: AWS_SECRET_ACCESS_KEY
             valueFrom:
               secretKeyRef:
                 name: secrets-demo
-                key: rotated-secret
-
+                key: aws-secret-access-key
+          - name: AWS_SESSION_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: secrets-demo
+                key: aws-session-token
 status: {}
